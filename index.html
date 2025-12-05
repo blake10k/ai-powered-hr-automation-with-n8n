@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n.io AI Agents for HR - A Beginner's Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        .flow-step {
+            background-color: white;
+            border: 2px solid #004FFF;
+            color: #004FFF;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-step-ai {
+            border-color: #4A90E2; /* Was green */
+            color: #4A90E2;
+        }
+        .flow-step-data {
+            border-color: #6B7280; /* Was yellow/orange */
+            color: #6B7280;
+        }
+        .flow-step-action {
+            border-color: #374151; /* Was red */
+            color: #374151;
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            color: #004FFF;
+            text-align: center;
+            align-self: center;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 767px) {
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold" style="color: #004FFF;">AI-Powered HR Automation with n8n.io</h1>
+            <a href="#getting-started" class="bg-[#004FFF] text-white px-5 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">Get Started</a>
+        </nav>
+    </header>
+
+    
+    <main class="container mx-auto p-6 md:p-12">
+
+        
+        <section id="intro" class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-4">Automate HR. Unleash Strategy.</h2>
+                    <p class="text-lg text-gray-700 mb-6">Welcome to your guide on using <a href="https://n8n.io/" target="_blank" class="font-bold" style="color: #004FFF;">n8n.io</a> to build autonomous AI agents. Instead of just automating single tasks, you can orchestrate entire HR processes, like recruiting and data analysis, freeing you to focus on strategic, creative work.</p>
+                    <p class="text-lg text-gray-700">This guide will show you the building blocks and two powerful examples to get you started.</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">Focus Areas for HR Automation</h3>
+                    <div class="chart-container">
+                        <canvas id="hrFocusChart"></canvas>
+                    </div>
+                    <p class="text-center text-gray-600 mt-4">AI agents can tackle repetitive tasks across all HR functions, with major opportunities in recruiting and data-driven people analytics.</p>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="core-concepts" class="mb-16 bg-white rounded-lg shadow-lg p-8 md:p-12" style="background-color: #f0f5ff;">
+            <h2 class="text-3xl font-bold text-center mb-10">The 4 Core Building Blocks of n8n.io</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-[#004FFF]">
+                    <span class="text-5xl">⚙️</span>
+                    <h3 class="text-2xl font-bold my-3">Nodes</h3>
+                    <p class="text-gray-700">These are the individual steps in your automation. A node can be an app (like Gemini or Gmail), a database, or a logic function (like "If...then").</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-[#5F97FF]">
+                    <span class="text-5xl">➡️</span>
+                    <h3 class="text-2xl font-bold my-3">Workflows</h3>
+                    <p class="text-gray-700">A workflow is a series of connected nodes on the n8n canvas. It's the complete visual map of your entire automated process from start to finish.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-[#A0C5FF]">
+                    <span class="text-5xl">🔌</span>
+                    <h3 class="text-2xl font-bold my-3">Connections</h3>
+                    <p class="text-gray-700">These are the lines that link your nodes, allowing data to flow from one step to the next. You control exactly what data moves where.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-[#7B8DAB]">
+                    <span class="text-5xl">⚡</span>
+                    <h3 class="text-2xl font-bold my-3">Triggers</h3>
+                    <p class="text-gray-700">This is the special node that starts your workflow. It can be a schedule (e.g., "every Monday at 9 AM"), a new email, or a webhook from another app.</p>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="workflow-recruiting" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Example 1: The AI Recruiting Agent</h2>
+            <p class="text-xl text-center text-gray-700 mb-12 max-w-3xl mx-auto">This workflow automates the entire top-of-funnel recruiting process, from creating a job description (JD) to scheduling interviews with top candidates.</p>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 overflow-x-auto">
+                <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step">⚡<br>Trigger: New Job in HRIS</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">→</div>
+                    <div class="flow-arrow block md:hidden">↓</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-ai">🧠<br>Gemini: Draft JD & Interview Qs</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">→</div>
+                    <div class="flow-arrow block md:hidden">↓</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-action">✉️<br>Email: Send to Hiring Manager for Approval</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">→</div>
+                    <div class="flow-arrow block md:hidden">↓</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-action">🌐<br>Post to Job Boards (e.g., Greenhouse)</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row justify-center my-4">
+                    <div class="flow-arrow block md:hidden">↓</div>
+                    <div class="flow-arrow hidden md:block rotate-90 w-full">↓</div>
+                </div>
+
+                <div class="flex flex-col-reverse md:flex-row md:items-center md:space-x-4">
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-action">✉️<br>Email: Send Interview Invites & Calendar Link</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">←</div>
+                    <div class="flow-arrow block md:hidden">↑</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-ai">🧠<br>Gemini: Identify Top 5 Candidates</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">←</div>
+                    <div class="flow-arrow block md:hidden">↑</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-ai">🧠<br>Gemini: Screen & Score Resumes</div>
+                    </div>
+                    <div class="flow-arrow hidden md:block">←</div>
+                    <div class="flow-arrow block md:hidden">↑</div>
+                    <div class="flex-1 md:w-1/6">
+                        <div class="flow-step flow-step-data">📥<br>Trigger: New Resume Received</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="key-nodes" class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">Key Nodes for Your HR AI Agent</h3>
+                    <div class="chart-container">
+                        <canvas id="keyNodesChart"></canvas>
+                    </div>
+                    <p class="text-center text-gray-600 mt-4">Your agent will be built by combining AI nodes with data, action, and trigger nodes.</p>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Your Agent's Toolkit</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">🧠</span>
+                            <div>
+                                <h4 class="text-xl font-semibold" style="color: #4A90E2;">AI & LLM Nodes (e.g., Gemini)</h4>
+                                <p class="text-gray-700">The "brain" of your agent. Use this to draft text, analyze data, score resumes, and make decisions.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">🗄️</span>
+                            <div>
+                                <h4 class="text-xl font-semibold" style="color: #6B7280;">Database Nodes (e.g., PostgreSQL)</h4>
+                                <p class="text-gray-700">Connect to your people data. Fetch employee records, candidate info, or performance metrics for analysis.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">✉️</span>
+                            <div>
+                                <h4 class="text-xl font-semibold" style="color: #374151;">Action Nodes (e.g., Gmail, Slack)</h4>
+                                <p class="text-gray-700">Allows your agent to communicate. Send emails, post Slack messages, or update calendar events.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">⏰</span>
+                            <div>
+                                <h4 class="text-xl font-semibold" style="color: #004FFF;">Trigger Nodes (e.g., Schedule)</h4>
+                                <p class="text-gray-700">Starts your workflow. Run a report every day, or trigger on a specific event like a new form submission.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="workflow-analytics" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Example 2: The People Analytics Agent</h2>
+            <p class="text-xl text-center text-gray-700 mb-12 max-w-3xl mx-auto">This agent runs autonomously to fetch fresh data, use AI to find insights, and email a concise report to your team every single morning.</p>
+
+            <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 overflow-x-auto">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="flow-step">⚡<br>Schedule Trigger (Daily 8 AM)</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step flow-step-data">🗄️<br>Query People Database (e.g., Attrition Data)</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step flow-step-ai">🧠<br>Gemini: Analyze Data & Generate 3 Key Insights</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step flow-step-action">📊<br>Create Chart (optional)</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step flow-step-action">✉️<br>Email Report & Insights to HR Team</div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="getting-started" class="text-center bg-white rounded-lg shadow-lg p-12" style="background-color: #004FFF;">
+            <h2 class="text-4xl font-bold text-white mb-6">Ready to Build Your First Agent?</h2>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">You have the concepts and the examples. The next step is to start building. n8n.io has a free plan to get you started right away.</p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md text-left text-gray-800">
+                    <h3 class="text-2xl font-bold mb-4">Your Next Steps</h3>
+                    <ol class="list-decimal list-inside space-y-3">
+                        <li class="text-lg"><span class="font-semibold">Sign up</span> for a free n8n.io cloud account.</li>
+                        <li class="text-lg">Explore the <span class="font-semibold">workflow templates</span> (especially for AI and HR).</li>
+                        <li class="text-lg">Start simple: Build a 2-node workflow (e.g., <span class="font-semibold">Schedule → Email</span>).</li>
+                        <li class="text-lg">Connect your <span class="font-semibold">first AI node</span> and ask it a question.</li>
+                    </ol>
+                </div>
+                <a href="https://n8n.io/" target="_blank" class="bg-white text-[#004FFF] font-bold py-4 px-8 rounded-lg text-xl hover:bg-gray-100 transition-colors shadow-lg">
+                    Explore n8n
+                </a>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="text-center p-6 bg-gray-100 mt-16">
+        <p class="text-gray-600">This infographic is a conceptual guide. n8n.io and Gemini are powerful tools; refer to their official documentation for full capabilities.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const chartColors = ['#004FFF', '#5F97FF', '#A0C5FF', '#DDE8FF']; // Changed to shades of blue/grey
+            
+            const hrFocusCtx = document.getElementById('hrFocusChart').getContext('2d');
+            new Chart(hrFocusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Recruiting', 'People Analytics', 'Admin Tasks', 'Other'],
+                    datasets: [{
+                        label: 'Focus of HR Automation',
+                        data: [40, 30, 20, 10],
+                        backgroundColor: chartColors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                      return label.join(' ');
+                                    } else {
+                                      return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            
+            const keyNodesCtx = document.getElementById('keyNodesChart').getContext('2d');
+            new Chart(keyNodesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Schedule', 'Gemini', 'Database', 'Email', 'HTTP Request'],
+                    datasets: [{
+                        label: 'Importance for HR Agents',
+                        data: [95, 90, 80, 75, 60],
+                        backgroundColor: chartColors,
+                        borderColor: chartColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                      return label.join(' ');
+                                    } else {
+                                      return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
